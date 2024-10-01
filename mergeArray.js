@@ -11,12 +11,37 @@
 
 
 const mergeArrays = (arr1, arr2) => {
+    const combinedArray = [...arr1, ...arr2];   
+    const removedDuplicate = removeDuplicate(combinedArray)
 
-    const combinedArray = [...arr1, ...arr2];
-    const uniqueArray = Array.from(new Set(combinedArray));
-
-    return uniqueArray.sort((a, b) => a - b);
+    return removedDuplicate.sort((a,b) => a - b)
 
 }
 
 console.log(mergeArrays([3,7,2,8], [2,4,1,10]))
+
+
+function removeDuplicate (arr) {
+    let result = []
+
+    for (let i = 0; i < arr.length; i++) {
+        let found = false
+        if (result.length === 0) {
+            result.push(arr[i])
+        } else {
+            for (let j = 0; j < result.length; j++) {
+                if (arr[i] === result[j]) {
+                    found = true;
+                    break;
+                } 
+            }
+
+            if (!found) {
+                result.push(arr[i])
+                found = false
+            }
+        }
+    }
+
+    return result
+}
