@@ -45,3 +45,34 @@ function removeDuplicate (arr) {
 
     return result
 }
+
+
+// Better way of remove duplicate
+
+// const removeDuplicates = (arr) => {
+//     if (arr.length === 0) return []; // Handle empty array edge case
+
+//     // Sort the array
+//     arr.sort((a, b) => a - b);
+
+//     // Use the sorted array to easily remove duplicates
+//     const result = [arr[0]]; // Start with the first element
+
+//     for (let i = 1; i < arr.length; i++) {
+//         if (arr[i] !== arr[i - 1]) { // Only add if current is not the same as previous
+//             result.push(arr[i]);
+//         }
+//     }
+
+//     return result;
+// }
+
+
+//ChatGPT solution 
+
+// function mergeArrays(arr1, arr2) {
+//     const combinedArray = [...arr1, ...arr2];
+//     const uniqueArray = Array.from(new Set(combinedArray));
+//     uniqueArray.sort((a, b) => a - b);
+//     return uniqueArray;
+// }
