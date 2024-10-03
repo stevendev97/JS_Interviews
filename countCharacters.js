@@ -33,6 +33,9 @@
 // }
 
 
+//using for of loop
+
+
 const countCharacters = (str) => {
 
     const result = {};
