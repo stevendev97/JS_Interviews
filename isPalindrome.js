@@ -10,13 +10,13 @@
 // For example, isPalindrome("A man a plan a canal Panama") should return true.
 
 
-const isPalindrome = (inTake) => {
-    if (inTake.split("").reverse().join("") === inTake) {
-        return true
-    } else {
-        return false
-    }
-}
+// const isPalindrome = (inTake) => {
+//     if (inTake.split("").reverse().join("") === inTake) {
+//         return true
+//     } else {
+//         return false
+//     }
+// }
 
 // Answer from ChatGPT 
 // const isPalindrome = (inTake) => {
@@ -25,6 +25,11 @@ const isPalindrome = (inTake) => {
 //     return reversedString === cleanString;
 // }
 
+const isPalindrome = (str) => {
+    return str.toLowerCase() === str.toLowerCase().split("").reverse().join("");
+}
 
-console.log(isPalindrome('momt'))
+
+
+console.log(isPalindrome('racecar'))
 
