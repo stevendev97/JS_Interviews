@@ -11,23 +11,48 @@
 // The function should work for arrays nested at any level.
 
 
+// const flattenArray = (arr) => {
+//     let result = []
+
+//     const falttenInnerArr = (innerArr) => {
+
+//         innerArr.forEach(item => {
+//             if (Array.isArray(item)) {
+//                 falttenInnerArr(item)
+//             } else {
+//                 result.push(item)
+//             }
+//         })
+
+//     }
+
+//     falttenInnerArr(arr)
+//     return result
+// }
+
+// console.log(flattenArray([1, [2, [3, [4]], 5]]))
+
+
+
+
+
 const flattenArray = (arr) => {
-    let result = []
+    const result = []
 
-    const falttenInnerArr = (innerArr) => {
-
-        innerArr.forEach(item => {
-            if (Array.isArray(item)) {
-                falttenInnerArr(item)
+    const flatinner = (innerArr) => {
+        for (let i = 0; i < innerArr.length; i ++) {
+            if (Array.isArray(innerArr[i])) {
+                flatinner(innerArr[i])
             } else {
-                result.push(item)
+                result.push(innerArr[i])
             }
-        })
-
+        }
     }
 
-    falttenInnerArr(arr)
+    flatinner(arr)
+
     return result
 }
 
-console.log(flattenArray([1, [2, [3, [4]], 5]]))
+
+const gptFlatArray = (arr) => arr.flat(Infinity);
