@@ -1,87 +1,82 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import './BlogList.css';
+import React, { useCallback, useEffect, useState } from 'react'
+import './BlogList.css'
 
-const BlogList = () => {
-    const [posts, setPosts] = useState([]);
-    const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
+function BlogList() {
+    //https://jsonplaceholder.typicode.com/posts?_limit=10&_page=${page}
+    const [posts, setPosts] = useState([])
+    const [page, setPage] = useState(1)
 
-    // Fetch posts
-    const fetchPosts = async () => {
-        if (loading) return;
-        setLoading(true);
+    const fetchPosts = () => {
+        if (page > 10) return; 
 
-        try {
-            const response = await axios.get(
-                `https://jsonplaceholder.typicode.com/posts?_limit=10&_page=${page}`
-            );
+        fetch(`https://jsonplaceholder.typicode.com/posts?_limit=10&_page=${page}`)
+            .then(res => res.json())
+            .then(res => {
+                setPosts(prev => [...prev, ...res])
+            })
+    }
 
-            if (response.data.length > 0) {
-                setPosts((prevPosts) => [...prevPosts, ...response.data]);
-            } else {
-                setHasMore(false); // No more data to fetch
-            }
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-        }
-
-        setLoading(false);
-    };
-
-    // Handle scroll event with throttling
-    const handleScroll = useCallback(() => {
-        if (!hasMore || loading) return;
-
-        const scrollTop = document.documentElement.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const clientHeight = document.documentElement.clientHeight;
-
-        if (scrollHeight - scrollTop <= clientHeight + 100) {
-            setPage((prevPage) => prevPage + 1);
-        }
-    }, [hasMore, loading]);
-
-    useEffect(() => {
-        fetchPosts();
-    }, [page]);
-
-    useEffect(() => {
-        const throttledScroll = throttle(handleScroll, 200);
-        window.addEventListener('scroll', throttledScroll);
+    const throttle = (func) => {
+        let timeoutId = null; // Track the timeout ID
 
         return () => {
-            window.removeEventListener('scroll', throttledScroll);
+            // If a timeout is active, clear it
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(() => {
+                func(); // Execute the throttled function
+                timeoutId = null; // Clear the timeout after execution
+            }, 100); // Throttle delay in milliseconds
         };
-    }, [handleScroll]);
+    };
+
+    const handleScroll = useCallback(() => {
+        console.log('han scroll is called')
+        if (isNearBottom()) {
+            console.log('calling fetch')
+            setPage(prev => prev + 1)
+        }
+    }, [])
+
+    const isNearBottom = () => {
+        const scrollBarBottom = window.scrollY + window.innerHeight; // Bottom of the scroll bar
+        const documentHeight = document.documentElement.scrollHeight; // Total document height
+
+        return (documentHeight - scrollBarBottom < 550); // Adjust threshold as needed
+    };
+
+    // const handleScroll = throttle(fetchPosts)
+
+    useEffect(() => {
+        fetchPosts()
+    }, [page])
+
+    useEffect(() => {
+        window.addEventListener('scroll', throttle(handleScroll));
+
+        return () => {
+            // Cleanup event listener
+            console.log('under removing')
+            window.removeEventListener('scroll', throttle(handleScroll));
+        };
+    }, [handleScroll])
+
 
     return (
-        <div className="blog-list">
-            <h1>Infinite Scrolling Blog</h1>
-            {posts.map((post) => (
-                <div key={post.id} className="post">
-                    <h2>{post.title}</h2>
-                    <p>{post.body}</p>
-                </div>
-            ))}
-            {loading && <p>Loading more posts...</p>}
-            {!hasMore && <p>No more posts to display.</p>}
+        <div className='cardContainer'>
+            {
+                posts.map((post) => {
+                    return (
+                        <div key={post.id} className='postCard'>
+                            <h2>{post.title}</h2>
+                            <p>{post.body}</p>
+                        </div>
+                    )
+                })
+            }
         </div>
-    );
-};
+    )
+}
 
-// Throttle function
-const throttle = (func, delay) => {
-    let lastCall = 0;
-
-    return (...args) => {
-        const now = Date.now();
-        if (now - lastCall >= delay) {
-            lastCall = now;
-            func(...args);
-        }
-    };
-};
-
-export default BlogList;
+export default BlogList
